@@ -12,6 +12,9 @@ import { MessageService } from './message.service';
 export class HeroService {
 // URL to web api with the form ':api/:collectionName'
 private heroesUrl = 'api/heroes';
+httpOptions = {
+  headers: new HttpHeaders({ 'Content-Type': 'application/json' })
+};
   constructor(
     private messageService:MessageService,
     private http:HttpClient
@@ -45,6 +48,13 @@ getHero(id: number): Observable<Hero> {
   return this.http.get<Hero>(url).pipe(
     tap(_ => this.log(`fetched hero id=${id}`)),
     catchError(this.handleError<Hero>(`getHero id=${id}`))
+  );
+}
+/** PUT: update the hero on the server */
+updateHero(hero: Hero): Observable<any> {
+  return this.http.put(this.heroesUrl, hero, this.httpOptions).pipe(
+    tap(_ => this.log(`updated hero id=${hero.id}`)),
+    catchError(this.handleError<any>('updateHero'))
   );
 }
 /** Log a HeroService message with the MessageService */
